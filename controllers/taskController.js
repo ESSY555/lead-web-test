@@ -61,8 +61,8 @@ exports.getTasks = async (req, res) => {
     const offset =
       (page - 1) * limit;
 
-    const tasks =
-      await Task.findAll({
+    const { count, rows } =
+      await Task.findAndCountAll({
 
         where: whereClause,
 
@@ -74,7 +74,12 @@ exports.getTasks = async (req, res) => {
 
       });
 
-    res.json(tasks);
+    res.json({
+      tasks: rows,
+      total: count,
+      page: parseInt(page),
+      totalPages: Math.ceil(count / limit)
+    });
 
   } catch (error) {
 
